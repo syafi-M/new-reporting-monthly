@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\QrCodeStoreRequest;
+use App\Models\qrCode;
 use App\Services\Media\QrCodeService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -47,9 +48,10 @@ class QrCodeController extends Controller
 
     public function store(QrCodeStoreRequest $request)
     {
+        $qrId = qrCode::max('id') + 1;
         try {
             $validated = $request->validated();
-            $this->service->create($validated['data'], $validated['kegiatan'] ?? null);
+            $this->service->create($validated['data'], $validated['kegiatan'] ?? null, $qrId);
 
             return redirect()
                 ->route('admin-qrcode.index')

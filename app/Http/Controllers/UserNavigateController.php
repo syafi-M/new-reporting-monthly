@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\qrCode;
 use App\Services\CalendarService;
 use App\Services\HolidayService;
 use App\Services\Settings\UserSettingsService;
@@ -16,16 +17,30 @@ class UserNavigateController extends Controller
 
     public function toUploadImgLaporan(UploadImageService $service)
     {
+        $qrId = qrCode::whereId(request('id'))->first()->data ?? null;
+        $separatedQrId = explode('-', $qrId);
+
         if (in_array(Auth::user()->jabatan_id, ['10', '12', '13', '19', '20'])) {
-            return redirect()->route('finding.index', [
-                'n' => request('n'),
-                'temuan' => request('temuan'),
-            ]);
+            if (request()->has('id')) {
+                return redirect()->route('finding.index', [
+                    'n' => $separatedQrId[0],
+                    'temuan' => request('temuan'),
+                ]);
+            } else {
+                return redirect()->route('finding.index', [
+                    'n' => request('n'),
+                    'temuan' => request('temuan'),
+                ]);
+            }
         }
 
-        $data = $service->getUploadImageData();
+        if(request('id')) {
+            $data = $service->getUploadImageData($separatedQrId);
+        } else {
+            $data = $service->getUploadImageData();
+        }
 
-        return view('pages.user.send_img.create', $data);
+        return view('pages.user.send_img.create', $data, $separatedQrId);
     }
 
     public function toCalenderUpload(HolidayService $holidayService, CalendarService $calendarService)

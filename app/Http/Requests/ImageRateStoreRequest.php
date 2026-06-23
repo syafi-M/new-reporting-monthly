@@ -14,8 +14,9 @@ class ImageRateStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
+            'image_path_rate' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp'],
             'rate' => ['required', 'integer', 'min:1', 'max:5'],
             'comment' => ['nullable', 'string', 'max:255'],
             'n' => ['required', 'string', 'max:255'],
@@ -25,7 +26,8 @@ class ImageRateStoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama wajib diisi.',
+            'name.nullable' => 'Nama tidak wajib diisi.',
+            'email.nullable' => 'Email tidak wajib diisi.',
             'rate.required' => 'Rating wajib dipilih.',
             'rate.integer' => 'Rating harus berupa angka.',
             'rate.min' => 'Rating minimal 1.',

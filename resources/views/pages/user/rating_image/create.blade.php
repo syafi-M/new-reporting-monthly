@@ -89,7 +89,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('rating-pekerjaan.store') }}" method="POST" class="space-y-5 rounded-2xl border border-slate-200 bg-white p-4 md:p-5">
+                    <form action="{{ route('rating-pekerjaan.store') }}" method="POST" class="space-y-5 rounded-2xl border border-slate-200 bg-white p-4 md:p-5" enctype="multipart/form-data">
                         @csrf
 
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -97,7 +97,6 @@
                                 <label for="name" class="mb-2 block text-sm font-medium text-slate-700">Nama</label>
                                 <input id="name" name="name" type="text" value="{{ old('name') }}"
                                     placeholder="Contoh: Budi Santoso"
-                                    required
                                     class="input input-bordered w-full rounded-xl border-slate-300 bg-white focus:border-indigo-500 focus:outline-none" />
                             </div>
 
@@ -105,8 +104,7 @@
                                 <label for="email" class="mb-2 block text-sm font-medium text-slate-700">Email</label>
                                 <input id="email" name="email" type="email" value="{{ old('email') }}"
                                     placeholder="nama@email.com"
-                                    class="input input-bordered w-full rounded-xl border-slate-300 bg-white focus:border-indigo-500 focus:outline-none @error('email') input-error @enderror"
-                                    required />
+                                    class="input input-bordered w-full rounded-xl border-slate-300 bg-white focus:border-indigo-500 focus:outline-none @error('email') input-error @enderror"/>
                             </div>
                         </div>
 
@@ -122,6 +120,88 @@
                             </div>
                             <p class="mt-1 text-xs text-slate-500">Pilih bintang dari 1 sampai 5.</p>
                         </div>
+
+                        <div class="form-control w-full">
+                            <!-- Label -->
+                            <div class="mb-2 flex items-center justify-between">
+                                <label class="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    Bukti Keluhan / Saran
+                                </label>
+                                <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-400">Opsional</span>
+                            </div>
+
+                            <!-- Dropzone Card -->
+                            <label for="image_path_rate"
+                                class="relative flex flex-col items-center justify-center w-full min-h-[140px] rounded-2xl cursor-pointer transition-all duration-200 group overflow-hidden
+                                    @error('image_path_rate') border-2 border-red-300 bg-red-50/40 hover:bg-red-50/70 @else border-2 border-dashed border-indigo-200/70 bg-gradient-to-br from-indigo-50/40 via-white to-purple-50/40 hover:border-indigo-400 hover:shadow-md hover:shadow-indigo-100/50 @enderror">
+
+                                <!-- Input File (Hidden) -->
+                                <input
+                                    id="image_path_rate"
+                                    name="image_path_rate"
+                                    type="file"
+                                    accept="image/*"
+                                    class="hidden"
+                                    onchange="previewImage(this)"
+                                />
+
+                                <!-- Placeholder State -->
+                                <div id="upload-placeholder" class="flex flex-col items-center justify-center text-center py-6 px-4 space-y-3">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 rounded-2xl bg-indigo-400/20 blur-lg group-hover:bg-indigo-400/30 transition-all"></div>
+                                        <div class="relative p-3.5 bg-white rounded-2xl shadow-sm border border-indigo-100/60 group-hover:scale-105 group-hover:shadow-md transition-all duration-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <p class="text-sm">
+                                            <span class="font-semibold text-indigo-600">Klik untuk unggah</span>
+                                            <span class="text-slate-400"> gambar</span>
+                                        </p>
+                                        <p class="text-[11px] text-slate-400 tracking-wide">PNG, JPG, atau WEBP — Maks. 2MB</p>
+                                    </div>
+                                </div>
+
+                                <!-- Preview State -->
+                                <div id="upload-preview" class="hidden absolute inset-0 p-2.5 flex items-center justify-center overflow-hidden">
+                                    <img id="preview-img" src="" alt="Preview" class="w-full h-full object-contain rounded-xl">
+                                    <!-- Overlay gradient -->
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-xl pointer-events-none"></div>
+                                    <!-- Remove button -->
+                                    <button type="button" onclick="removeImage(event)"
+                                        class="absolute top-4 right-4 p-2 bg-white/90 hover:bg-white text-red-500 hover:text-red-600 rounded-full shadow-lg backdrop-blur-sm transition-all duration-150 hover:scale-110">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                    <!-- File info bar -->
+                                    <div class="absolute bottom-4 left-4 right-4 flex items-center gap-2">
+                                        <div class="flex items-center gap-2 rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1.5 shadow-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span id="file-name" class="text-xs font-medium text-slate-700 truncate max-w-[200px]">gambar.jpg</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <!-- Validation Error -->
+                            @error('image_path_rate')
+                                <div class="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                                    </svg>
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
 
                         <div class="form-control">
                             <label for="comment" class="mb-2 block text-sm font-medium text-slate-700">Komentar</label>
@@ -141,4 +221,37 @@
             </div>
         </div>
     </div>
+    <script>
+    function previewImage(input) {
+        const file = input.files[0];
+        const placeholder = document.getElementById('upload-placeholder');
+        const previewContainer = document.getElementById('upload-preview');
+        const previewImg = document.getElementById('preview-img');
+        const fileName = document.getElementById('file-name');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                fileName.textContent = file.name;
+                placeholder.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeImage(event) {
+        event.preventDefault(); // Mencegah pemicu klik pada label
+        const input = document.getElementById('image_path_rate');
+        const placeholder = document.getElementById('upload-placeholder');
+        const previewContainer = document.getElementById('upload-preview');
+        const previewImg = document.getElementById('preview-img');
+
+        input.value = ''; // Reset file input
+        previewImg.src = '';
+        previewContainer.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+    }
+    </script>
 </x-guest-layout>

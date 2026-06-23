@@ -63,7 +63,7 @@
                     <p class="text-gray-600">Masukkan Akun Absensi Untuk Masuk.</p>
                 </div>
 
-                <div id="not-operator" class="hidden mb-6">
+                <div class="mb-6">
                     <div class="rounded-xl border-[3px] border-dashed border-indigo-600/70 bg-indigo-50/70 p-3.5">
                         <p class="flex flex-wrap items-center gap-2 text-sm text-indigo-900">
                             <i class="text-base ri-chat-smile-2-line"></i>
@@ -160,15 +160,4 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function() {
-            const notOperatorLink = $('#not-operator');
-            const isOperator = localStorage.getItem('SACoperator');
-            if (isOperator) {
-                notOperatorLink.hide();
-            } else {
-                notOperatorLink.show();
-            }
-        });
-    </script>
 </x-guest-layout>

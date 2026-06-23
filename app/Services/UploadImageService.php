@@ -169,7 +169,7 @@ class UploadImageService
         $this->uploadImages->deleteUpload($uploadImage);
     }
 
-    public function getUploadImageData(): array
+    public function getUploadImageData($dataQr = null): array
     {
         $user = auth()->user();
         $typeJabatanUser = Str::upper($user->jabatan->name_jabatan);
@@ -212,6 +212,7 @@ class UploadImageService
             'uploadDraft' => $this->countDrafts($this->user->id),
             'allImages' => $allImages,
             'totalImageCount' => $totalImageCount,
+            'dataQr' => $dataQr,
         ];
     }
 

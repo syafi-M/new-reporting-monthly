@@ -34,6 +34,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::resource('/rating-pekerjaan', ImageRateController::class)
     ->only('create', 'store')
     ->middleware('throttle:20,1');
+Route::get('/rating-pekerjaan/terima-kasih', function () {
+    return view('pages.user.etc.makasih');
+})->name('rating-pekerjaan.makasih');
 
 Route::middleware(['auth', 'theme'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

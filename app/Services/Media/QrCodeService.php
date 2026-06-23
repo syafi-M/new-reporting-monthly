@@ -79,13 +79,21 @@ class QrCodeService
         return $kegiatan !== '' ? "{$data}-{$kegiatan}" : $data;
     }
 
-    public static function buildTargetUrl(string $data, ?string $kegiatan = null): string
+    public static function buildTargetUrl(string $data, ?string $kegiatan = null, ?int $qrId = null): string
     {
-        $targetUrl = self::QR_TARGET_BASE_URL . '?n=' . rawurlencode(trim($data));
-        $kegiatan = trim((string) $kegiatan);
+        if($qrId) {
+            $targetUrl = self::QR_TARGET_BASE_URL;
+        } else {
+            $targetUrl = self::QR_TARGET_BASE_URL . '?n=' . rawurlencode(trim($data));
+            $kegiatan = trim((string) $kegiatan);
+    
+            if ($kegiatan !== '') {
+                $targetUrl .= '&keg=' . rawurlencode($kegiatan);
+            }
+        }
 
-        if ($kegiatan !== '') {
-            $targetUrl .= '&keg=' . rawurlencode($kegiatan);
+        if ($qrId !== null) {
+            $targetUrl .= '?id=' . $qrId;
         }
 
         return $targetUrl;
@@ -98,10 +106,10 @@ class QrCodeService
         return self::buildTargetUrl($parts['data'], $parts['kegiatan']);
     }
 
-    public function create(string $data, ?string $kegiatan = null)
+    public function create(string $data, ?string $kegiatan = null, int $qrId = null)
     {
         $storedData = self::combineData($data, $kegiatan);
-        $targetUrl = self::buildTargetUrl($data, $kegiatan);
+        $targetUrl = self::buildTargetUrl($data, $kegiatan, $qrId);
         $filename = 'qr/' . Str::uuid() . '.png';
         $qrImage = QrCodeGenerator::format('png')
             ->size(300)
@@ -113,6 +121,7 @@ class QrCodeService
         return $this->repository->create([
             'qr' => $filename,
             'data' => $storedData,
+            'id' => $qrId,
         ]);
     }
 
@@ -120,7 +129,7 @@ class QrCodeService
     {
         $qrCode = $this->repository->findOrFail($id);
         $storedData = self::combineData($data, $kegiatan);
-        $targetUrl = self::buildTargetUrl($data, $kegiatan);
+        $targetUrl = self::buildTargetUrl($data, $kegiatan, $qrCode->id);
 
         $qrImage = QrCodeGenerator::format('png')
             ->size(300)

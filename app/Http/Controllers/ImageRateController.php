@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ImageRateStoreRequest;
 use App\Http\Requests\ImageRateUpdateRequest;
 use App\Models\ImageRate;
+use App\Models\qrCode;
 use App\Services\Media\ImageRateService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -32,7 +33,11 @@ class ImageRateController extends Controller
             $parsedUrl = parse_url($intendedUrl);
             if (isset($parsedUrl['query'])) {
                 parse_str($parsedUrl['query'], $queryParams);
-                $nValue = $queryParams['n'] ?? null;
+                if ($queryParams['id']) {
+                    $nValue = explode('-', qrCode::whereId($queryParams['id'])->first()->data)[0];
+                } else {
+                    $nValue = $queryParams['n'] ?? null;
+                }
             }
         }
 
@@ -46,7 +51,7 @@ class ImageRateController extends Controller
         try {
             $this->service->store($request->validated());
 
-            return redirect('/')->with('success', 'Rating berhasil disimpan');
+            return redirect()->route('rating-pekerjaan.makasih');
         } catch (\RuntimeException $e) {
             return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         } catch (QueryException $e) {

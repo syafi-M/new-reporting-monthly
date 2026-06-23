@@ -13,3 +13,4 @@ frankenphp-worker.php
 .agents/
 skills-lock.json
 .codex
+/CLAUDE.md

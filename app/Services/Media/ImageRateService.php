@@ -3,6 +3,8 @@
 namespace App\Services\Media;
 
 use App\Repositories\Contracts\ImageRateRepositoryInterface;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ImageRateService
 {
@@ -41,8 +43,14 @@ class ImageRateService
             throw new \RuntimeException('Image target tidak ditemukan untuk rating.');
         }
 
+        $imagePathRate = null;
+        if (isset($payload['image_path_rate']) && $payload['image_path_rate'] instanceof UploadedFile) {
+            $imagePathRate = $payload['image_path_rate']->store('image-rates', 'public');
+        }
+
         return $this->repository->create([
             'upload_image_id' => $image->id,
+            'image_path_rate' => $imagePathRate,
             'name' => $payload['name'],
             'email' => $payload['email'] ?? null,
             'rate' => (int) $payload['rate'],
