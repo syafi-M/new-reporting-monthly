@@ -20,7 +20,7 @@ class UserNavigateController extends Controller
         $qrId = qrCode::whereId(request('id'))->first()->data ?? null;
         $separatedQrId = explode('-', $qrId);
 
-        if (in_array(Auth::user()->jabatan_id, ['10', '12', '13', '19', '20'])) {
+        if (in_array(Auth::user()->jabatan_id, ['10', '12', '13', '19', '20', '35'])) {
             if (request()->has('id')) {
                 return redirect()->route('finding.index', [
                     'n' => $separatedQrId[0],

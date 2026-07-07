@@ -63,17 +63,40 @@
                     <p class="text-gray-600">Masukkan Akun Absensi Untuk Masuk.</p>
                 </div>
 
-                <div class="mb-6">
+                <div x-data="{ ratingModalOpen: false }" class="mb-6">
                     <div class="rounded-xl border-[3px] border-dashed border-indigo-600/70 bg-indigo-50/70 p-3.5">
                         <p class="flex flex-wrap items-center gap-2 text-sm text-indigo-900">
                             <i class="text-base ri-chat-smile-2-line"></i>
                             <span>Ingin memberikan ulasan pekerjaan?</span>
-                            <a href="{{ route('rating-pekerjaan.create') }}"
+                            <button type="button" @click="ratingModalOpen = true"
                                 class="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1 font-semibold text-indigo-600 transition hover:bg-indigo-600 hover:text-indigo-400">
                                 Klik di sini
                                 <i class="text-sm ri-arrow-right-line"></i>
-                            </a>
+                            </button>
                         </p>
+                    </div>
+
+                    <div x-show="ratingModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <div class="absolute inset-0 z-0 bg-gray-900/50" @click="ratingModalOpen = false"></div>
+                        <div class="relative z-10 w-full max-w-sm rounded-2xl p-5 shadow-xl" style="background-color: #ffffff;">
+                            <button type="button" @click="ratingModalOpen = false" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600">
+                                <i class="text-xl ri-close-line"></i>
+                            </button>
+                            <h3 class="mb-2 text-lg font-bold text-gray-900">Pilih Jenis Ulasan</h3>
+                            <p class="mb-5 text-sm text-gray-600">Silakan pilih mengulas sebagai apa.</p>
+                            <div class="grid gap-3 sm:grid-cols-2">
+                                <a href="{{ route('rating-pekerjaan.create', ['jenis' => 'customer']) }}"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700">
+                                    Customer
+                                    <i class="ri-arrow-right-line"></i>
+                                </a>
+                                <a href="{{ route('rating-pekerjaan.create', ['jenis' => 'kepala-jaga']) }}"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg border border-indigo-600 px-4 py-3 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50">
+                                    Kepala Jaga
+                                    <i class="ri-arrow-right-line"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

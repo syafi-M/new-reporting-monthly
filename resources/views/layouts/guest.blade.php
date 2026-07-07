@@ -39,6 +39,10 @@
                 font-weight: 500;
                 font-size: 0.85em;
             }
+
+            [x-cloak] {
+                display: none !important;
+            }
         </style>
     </head>
     <body class="font-sans text-gray-900 antialiased">
