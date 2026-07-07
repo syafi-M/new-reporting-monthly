@@ -39,9 +39,9 @@ class ImageRateService
 
         $image = $this->repository->findUploadByAreaName(strtolower($imageName));
 
-        if (!$image) {
-            throw new \RuntimeException('Image target tidak ditemukan untuk rating.');
-        }
+        // if (!$image) {
+        //     throw new \RuntimeException('Image target tidak ditemukan untuk rating.');
+        // }
 
         $imagePathRate = null;
         if (isset($payload['image_path_rate']) && $payload['image_path_rate'] instanceof UploadedFile) {
@@ -49,7 +49,7 @@ class ImageRateService
         }
 
         return $this->repository->create([
-            'upload_image_id' => $image->id,
+            'upload_image_id' => $image->id ?? null,
             'image_path_rate' => $imagePathRate,
             'name' => $payload['name'],
             'email' => $payload['email'] ?? null,

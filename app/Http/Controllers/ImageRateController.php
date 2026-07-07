@@ -29,12 +29,14 @@ class ImageRateController extends Controller
         $intendedUrl = session()->get('url.intended');
         $nValue = null;
 
+        
         if ($intendedUrl) {
             $parsedUrl = parse_url($intendedUrl);
             if (isset($parsedUrl['query'])) {
                 parse_str($parsedUrl['query'], $queryParams);
-                if ($queryParams['id']) {
-                    $nValue = explode('-', qrCode::whereId($queryParams['id'])->first()->data)[0];
+                if (!empty($queryParams['id'])) {
+                    $qrCode = qrCode::find($queryParams['id']);
+                    $nValue = $qrCode ? explode('-', $qrCode->data)[0] : null;
                 } else {
                     $nValue = $queryParams['n'] ?? null;
                 }
@@ -43,7 +45,11 @@ class ImageRateController extends Controller
 
         $uploadPreview = $this->service->findUploadPreviewByName($nValue);
 
-        return view('pages.user.rating_image.create', compact('nValue', 'uploadPreview'));
+        if($request->jenis == 'kepala-jaga') {
+            return view('pages.user.rating_image.create_kepala_jaga', compact('nValue', 'uploadPreview'));
+        } else {
+            return view('pages.user.rating_image.create', compact('nValue', 'uploadPreview'));
+        }
     }
 
     public function store(ImageRateStoreRequest $request)

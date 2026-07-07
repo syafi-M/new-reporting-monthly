@@ -1322,9 +1322,9 @@
                     const formData = new FormData();
                     formData.append('pdf', pdfBlob, `Photo_Progress_Report_${month.replace(/\s+/g, '_')}.pdf`);
                     formData.append('month', month);
-                    formData.append('client_ids', clientIds ? JSON.stringify(clientIds) : '');
+                    formData.append('client_ids', clientIds);
                     formData.append('_token', CSRF_TOKEN);
-
+                    
                     $.ajax({
                         url: '{{ route('admin.upload.store-pdf') }}',
                         type: 'POST',
