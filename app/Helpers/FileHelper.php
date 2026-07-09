@@ -60,7 +60,7 @@ class FileHelper
             $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $fullPath);
 
             $image
-                ->scale(height: 2048)
+                ->scaleDown(height: 1280)
                 ->encode(new WebpEncoder(quality: $quality))
                 ->save($webpPath);
 
@@ -96,7 +96,7 @@ class FileHelper
         string $folder = 'uploads',
         ?string $oldFile = null,
         bool $useOriginalName = false,
-        int $quality = 80,
+        int $quality = 75,
     ) {
         if (!$file) {
             return $oldFile;
