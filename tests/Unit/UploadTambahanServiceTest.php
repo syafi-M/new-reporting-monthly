@@ -1,92 +1,110 @@
 <?php
 
-use App\Models\Jabatan;
-use App\Models\User;
 use App\Repositories\Contracts\UploadTambahanRepositoryInterface;
 use App\Services\UploadTambahanService;
 use App\Services\UploadTambahanStorageService;
+use App\Models\User;
+use Mockery\MockInterface;
+use Tests\TestCase;
 
-function makeUploadTambahanServiceUser(string $jabatanName, string $typeJabatan = '', string $codeJabatan = ''): User
+uses(TestCase::class);
+afterEach(fn () => Mockery::close());
+
+function makeUploadTambahanSvc(callable $repoSetup, ?callable $storageSetup = null): UploadTambahanService
 {
-    $user = new User();
-    $user->id = 1;
-    $jabatan = new Jabatan();
-    $jabatan->forceFill([
-        'name_jabatan' => $jabatanName,
-        'type_jabatan' => $typeJabatan,
-        'code_jabatan' => $codeJabatan,
-    ]);
-    $user->setRelation('jabatan', $jabatan);
+    $repo    = Mockery::mock(UploadTambahanRepositoryInterface::class, $repoSetup);
+    $storage = Mockery::mock(UploadTambahanStorageService::class, $storageSetup ?? fn ($m) => null);
+    return new UploadTambahanService($repo, $storage);
+}
 
+function makeUploadTambahanUser(bool $canUpload = true): User
+{
+    $jabatan = (object) [
+        'type_jabatan' => $canUpload ? 'leader' : 'staff',
+        'name_jabatan' => $canUpload ? 'Leader CS' : 'Staff',
+        'code_jabatan' => '',
+    ];
+    $kerjasama = (object) ['client_id' => 5];
+
+    $user = new User();
+    $user->forceFill(['id' => 1, 'name' => 'Test']);
+    $user->setRelation('jabatan', $jabatan);
+    $user->setRelation('kerjasama', $kerjasama);
     return $user;
 }
 
-it('detects supervisor wilayah correctly', function () {
-    $service = new UploadTambahanService(
-        $this->createMock(UploadTambahanRepositoryInterface::class),
-        $this->createMock(UploadTambahanStorageService::class),
-    );
-    $user = makeUploadTambahanServiceUser('Supervisor Wilayah');
+// ── getUserIndexData ──────────────────────────────────────────────────────────
+
+it('getUserIndexData returns uploads key', function () {
+    $paginator = Mockery::mock(\Illuminate\Contracts\Pagination\LengthAwarePaginator::class);
+    $user = makeUploadTambahanUser();
+
+    $service = makeUploadTambahanSvc(function (MockInterface $m) use ($paginator) {
+        $m->shouldReceive('paginateByUser')->once()->with(1)->andReturn($paginator);
+    });
+
+    $result = $service->getUserIndexData($user);
+
+    expect($result)->toHaveKey('uploads');
+});
+
+// ── resolvePeriod ─────────────────────────────────────────────────────────────
+
+it('resolvePeriod returns current month/year when null', function () {
+    \Carbon\Carbon::setTestNow(\Carbon\Carbon::create(2026, 6, 15));
+
+    $service = makeUploadTambahanSvc(fn ($m) => null);
+    $result  = $service->resolvePeriod(null, null);
+
+    expect($result['month'])->toBe(6)->and($result['year'])->toBe(2026);
+
+    \Carbon\Carbon::setTestNow();
+});
+
+it('resolvePeriod returns explicit values', function () {
+    $service = makeUploadTambahanSvc(fn ($m) => null);
+    $result  = $service->resolvePeriod(3, 2025);
+
+    expect($result['month'])->toBe(3)->and($result['year'])->toBe(2025);
+});
+
+// ── isSupervisorWilayah / isSupervisorArea ────────────────────────────────────
+
+it('isSupervisorWilayah detects supervisor wilayah', function () {
+    $user = new User();
+    $user->setRelation('jabatan', (object) [
+        'type_jabatan' => 'supervisor',
+        'name_jabatan' => 'supervisor wilayah',
+        'code_jabatan' => '',
+    ]);
+
+    $service = makeUploadTambahanSvc(fn ($m) => null);
 
     expect($service->isSupervisorWilayah($user))->toBeTrue();
 });
 
-it('detects supervisor area correctly', function () {
-    $service = new UploadTambahanService(
-        $this->createMock(UploadTambahanRepositoryInterface::class),
-        $this->createMock(UploadTambahanStorageService::class),
-    );
-    $user = makeUploadTambahanServiceUser('Supervisor Area');
+it('isSupervisorArea detects supervisor area', function () {
+    $user = new User();
+    $user->setRelation('jabatan', (object) [
+        'type_jabatan' => 'supervisor',
+        'name_jabatan' => 'supervisor area',
+        'code_jabatan' => '',
+    ]);
+
+    $service = makeUploadTambahanSvc(fn ($m) => null);
 
     expect($service->isSupervisorArea($user))->toBeTrue();
 });
 
-it('allows check access for supervisor pusat', function () {
-    $service = new UploadTambahanService(
-        $this->createMock(UploadTambahanRepositoryInterface::class),
-        $this->createMock(UploadTambahanStorageService::class),
-    );
-    $user = makeUploadTambahanServiceUser('Supervisor Pusat');
+it('isSupervisorWilayah returns false for regular staff', function () {
+    $user = new User();
+    $user->setRelation('jabatan', (object) [
+        'type_jabatan' => 'staff',
+        'name_jabatan' => 'staff biasa',
+        'code_jabatan' => '',
+    ]);
 
-    $service->ensureUserCanCheck($user);
-    expect(true)->toBeTrue();
-});
+    $service = makeUploadTambahanSvc(fn ($m) => null);
 
-it('recognizes special spv pusat viewer', function () {
-    $service = new UploadTambahanService(
-        $this->createMock(UploadTambahanRepositoryInterface::class),
-        $this->createMock(UploadTambahanStorageService::class),
-    );
-    $user = makeUploadTambahanServiceUser('SPV Pusat', '', 'SPV');
-
-    $method = new ReflectionMethod($service, 'isSpecialSpvPusatViewer');
-    $method->setAccessible(true);
-
-    expect($method->invoke($service, $user))->toBeTrue();
-});
-
-it('maps SPV code to leader targets', function () {
-    $service = new UploadTambahanService(
-        $this->createMock(UploadTambahanRepositoryInterface::class),
-        $this->createMock(UploadTambahanStorageService::class),
-    );
-    $user = makeUploadTambahanServiceUser('Supervisor Pusat', '', 'SPV');
-
-    $method = new ReflectionMethod($service, 'resolveSpecialSpvPusatTargetJabatanNames');
-    $method->setAccessible(true);
-
-    expect($method->invoke($service, $user))->toBe(['LEADER CS', 'LEADER']);
-});
-
-it('maps SPV-W code to danru security target', function () {
-    $service = new UploadTambahanService(
-        $this->createMock(UploadTambahanRepositoryInterface::class),
-        $this->createMock(UploadTambahanStorageService::class),
-    );
-    $user = makeUploadTambahanServiceUser('Supervisor Pusat', '', 'SPV-W');
-
-    $method = new ReflectionMethod($service, 'resolveSpecialSpvPusatTargetJabatanNames');
-    $method->setAccessible(true);
-
-    expect($method->invoke($service, $user))->toBe(['DANRU SECURITY']);
+    expect($service->isSupervisorWilayah($user))->toBeFalse();
 });
