@@ -9,7 +9,7 @@
                     <div>
                         <p class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium">
                             <i class="ri-customer-service-2-line"></i>
-                            Feedback Pelanggan
+                            Feedback Kepala Jaga
                         </p>
                         <h1 class="text-3xl font-bold leading-tight md:text-4xl">
                             Bantu kami jadi lebih baik
@@ -100,17 +100,10 @@
 
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div class="form-control">
-                                <label for="name" class="mb-2 block text-sm font-medium text-slate-700">Nama</label>
+                                <label for="name" class="mb-2 block text-sm font-medium text-slate-700">Nama Kepala Jaga</label>
                                 <input id="name" name="name" type="text" value="{{ old('name') }}"
                                     placeholder="Contoh: Budi Santoso"
                                     class="input input-bordered w-full rounded-xl border-slate-300 bg-white focus:border-indigo-500 focus:outline-none" />
-                            </div>
-
-                            <div class="form-control">
-                                <label for="email" class="mb-2 block text-sm font-medium text-slate-700">Email</label>
-                                <input id="email" name="email" type="email" value="{{ old('email') }}"
-                                    placeholder="nama@email.com"
-                                    class="input input-bordered w-full rounded-xl border-slate-300 bg-white focus:border-indigo-500 focus:outline-none @error('email') input-error @enderror"/>
                             </div>
                         </div>
 
