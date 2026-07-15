@@ -39,6 +39,14 @@
                 <span class="font-medium">{{ in_array(Auth::user()->jabatan_id, ['10', '12', '13', '19', '20', '35']) ? 'Kirim Foto Controlling' : 'Kirim Foto Laporan' }}</span>
             </a>
 
+            @if(in_array(Auth::user()->jabatan_id, ['10', '11', '12', '13', '19', '20', '35']))
+                <a href="{{ route('user-rating-image.index') }}"
+                    class="flex items-center px-4 py-3 space-x-3 transition-all rounded-lg {{ request()->routeIs('user-rating-image.index') ? 'bg-blue-500 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26ZM12.0006 15.968L16.2473 18.3451L15.2988 13.5717L18.8719 10.2674L14.039 9.69434L12.0006 5.27502L9.96214 9.69434L5.12921 10.2674L8.70231 13.5717L7.75383 18.3451L12.0006 15.968Z"></path></svg>
+                    <span class="font-medium">Lihat Hasil Rating</span>
+                </a>
+            @endif
+
             @if (auth()->user()->isAccess())
                 <a href="{{ route('fixed.index') }}"
                     class="flex items-center px-4 py-3 space-x-3 transition-all rounded-lg {{ request()->routeIs('fixed.*') ? 'bg-blue-500 text-white' : 'text-slate-600 hover:bg-slate-100' }}">

@@ -18,7 +18,7 @@ class UploadImageStorageService
         if ($request->filled($tempField)) {
             $tempToken = (string) $request->input($tempField);
             $tempPayload = FileHelper::decodeTempUploadToken($tempToken);
-            $resolvedPath = FileHelper::moveTempUploadToPublic($tempToken, $folder, $oldFile, false);
+            $resolvedPath = FileHelper::moveTempUploadToPublic($tempToken, $folder, $oldFile, skipConversion: false);
 
             Log::info('Resolved image from temp upload token', [
                 'field' => $field,

@@ -6,9 +6,11 @@ use App\Http\Requests\ImageRateStoreRequest;
 use App\Http\Requests\ImageRateUpdateRequest;
 use App\Models\ImageRate;
 use App\Models\qrCode;
+use App\Models\User;
 use App\Services\Media\ImageRateService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ImageRateController extends Controller
@@ -21,7 +23,11 @@ class ImageRateController extends Controller
     {
         $data = $this->service->indexData($request->only(['search', 'rate', 'sort']));
 
-        return view('pages.admin.rating_image.index', $data);
+        if(in_array(Auth::user()->jabatan_id, ['10', '11', '12', '13', '19', '20', '35'])) {
+            return view('pages.user.rating_image.index', $data);
+        } else {
+            return view('pages.admin.rating_image.index', $data);
+        }
     }
 
     public function create(Request $request)
