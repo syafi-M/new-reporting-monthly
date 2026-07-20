@@ -72,21 +72,29 @@
                                 <div class="grid w-full grid-cols-3 gap-2 xl:max-w-md">
                                     <div
                                         class="p-3 text-center border shadow-sm bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border-slate-200">
-                                        <div class="text-[11px] font-semibold tracking-[0.18em] uppercase text-slate-500">Total
+                                        <div
+                                            class="text-[11px] font-semibold tracking-[0.18em] uppercase text-slate-500">
+                                            Total
                                         </div>
-                                        <div class="mt-1 text-xl font-bold sm:text-2xl text-slate-800" id="totalImages">0</div>
+                                        <div class="mt-1 text-xl font-bold sm:text-2xl text-slate-800" id="totalImages">
+                                            0</div>
                                     </div>
 
                                     <div
                                         class="p-3 text-center border border-blue-200 shadow-sm bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl">
-                                        <div class="text-[11px] font-semibold tracking-[0.18em] text-blue-600 uppercase">Dipilih
+                                        <div
+                                            class="text-[11px] font-semibold tracking-[0.18em] text-blue-600 uppercase">
+                                            Dipilih
                                         </div>
-                                        <div class="mt-1 text-xl font-bold text-blue-600 sm:text-2xl" id="totalHasFix">0</div>
+                                        <div class="mt-1 text-xl font-bold text-blue-600 sm:text-2xl" id="totalHasFix">0
+                                        </div>
                                     </div>
 
                                     <div
                                         class="p-3 text-center border shadow-sm border-violet-200 bg-gradient-to-br from-violet-50 to-fuchsia-50 rounded-2xl">
-                                        <div class="text-[11px] font-semibold tracking-[0.18em] text-violet-600 uppercase">Maks
+                                        <div
+                                            class="text-[11px] font-semibold tracking-[0.18em] text-violet-600 uppercase">
+                                            Maks
                                         </div>
                                         <div class="mt-1 text-xl font-bold sm:text-2xl text-violet-600">11</div>
                                     </div>
@@ -112,10 +120,12 @@
                         <div class="mb-6">
                             <form class="w-full">
                                 <div class="p-3 bg-white border shadow-sm rounded-2xl border-slate-200 sm:p-4">
-                                    <div class="items-center justify-between hidden gap-3 pb-3 border-b border-slate-100 sm:flex">
+                                    <div
+                                        class="items-center justify-between hidden gap-3 pb-3 border-b border-slate-100 sm:flex">
                                         <div>
                                             <h3 class="text-sm font-semibold text-slate-800">Filter Data</h3>
-                                            <p class="text-xs text-slate-500">Pilih mitra dan periode untuk menampilkan foto.</p>
+                                            <p class="text-xs text-slate-500">Pilih mitra dan periode untuk menampilkan
+                                                foto.</p>
                                         </div>
                                         <div
                                             class="items-center justify-center hidden w-10 h-10 text-blue-600 rounded-xl bg-blue-50 sm:flex">
@@ -124,76 +134,78 @@
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-3 sm:mt-3 sm:grid-cols-12 sm:items-end">
-                                            <div class="col-span-2 form-control sm:col-span-12 xl:col-span-6">
-                                                <label for="client_id" class="mb-1.5">
-                                                    <span class="text-xs font-semibold tracking-wide text-slate-600 required">Mitra</span>
-                                                </label>
-                                                <div class="relative">
-                                                    <select name="client_id"
-                                                        class="w-full rounded-xl border-slate-200 bg-slate-50/80 select select-bordered clientId focus:outline-none focus:ring-2 focus:ring-primary">
-                                                        <option value="">Pilih mitra</option>
-                                                        @forelse($clients as $client)
-                                                            <option value="{{ $client->id }}">
-                                                                {{ ucwords(strtolower($client->name)) }}</option>
-                                                        @empty
-                                                            <option value="">Mitra Kosong</option>
-                                                        @endforelse
-                                                    </select>
-                                                    <i
-                                                        class="absolute -translate-y-1/2 pointer-events-none ri-building-line left-3 top-1/2 text-base-content/50"></i>
-                                                </div>
+                                        <div class="col-span-2 form-control sm:col-span-12 xl:col-span-6">
+                                            <label for="client_id" class="mb-1.5">
+                                                <span
+                                                    class="text-xs font-semibold tracking-wide text-slate-600 required">Mitra</span>
+                                            </label>
+                                            <div class="relative">
+                                                <select name="client_id"
+                                                    class="w-full rounded-xl border-slate-200 bg-slate-50/80 select select-bordered clientId focus:outline-none focus:ring-2 focus:ring-primary">
+                                                    <option value="">Pilih mitra</option>
+                                                    @forelse($clients as $client)
+                                                        <option value="{{ $client->id }}">
+                                                            {{ ucwords(strtolower($client->name)) }}</option>
+                                                    @empty
+                                                        <option value="">Mitra Kosong</option>
+                                                    @endforelse
+                                                </select>
+                                                <i
+                                                    class="absolute -translate-y-1/2 pointer-events-none ri-building-line left-3 top-1/2 text-base-content/50"></i>
                                             </div>
+                                        </div>
 
-                                            <div class="col-span-1 form-control sm:col-span-6 xl:col-span-3">
-                                                <label for="month" class="mb-1.5">
-                                                    <span class="text-xs font-semibold tracking-wide text-slate-600">Bulan <span
-                                                            class="text-error">*</span></span>
-                                                </label>
-                                                <div class="relative">
-                                                    <select name="month"
-                                                        class="w-full rounded-xl border-slate-200 bg-slate-50/80 month select select-bordered focus:outline-none focus:ring-2 focus:ring-primary">
-                                                        <option value="">Pilih Bulan</option>
-                                                        @foreach (range(1, 12) as $month)
-                                                            <option value="{{ str_pad($month, 2, '0', STR_PAD_LEFT) }}">
-                                                                {{ \Carbon\Carbon::create(null, $month, 1)->locale('id')->translatedFormat('F') }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    <i
-                                                        class="absolute -translate-y-1/2 pointer-events-none ri-calendar-line left-3 top-1/2 text-base-content/50"></i>
-                                                </div>
+                                        <div class="col-span-1 form-control sm:col-span-6 xl:col-span-3">
+                                            <label for="month" class="mb-1.5">
+                                                <span class="text-xs font-semibold tracking-wide text-slate-600">Bulan
+                                                    <span class="text-error">*</span></span>
+                                            </label>
+                                            <div class="relative">
+                                                <select name="month"
+                                                    class="w-full rounded-xl border-slate-200 bg-slate-50/80 month select select-bordered focus:outline-none focus:ring-2 focus:ring-primary">
+                                                    <option value="">Pilih Bulan</option>
+                                                    @foreach (range(1, 12) as $month)
+                                                        <option value="{{ str_pad($month, 2, '0', STR_PAD_LEFT) }}">
+                                                            {{ \Carbon\Carbon::create(null, $month, 1)->locale('id')->translatedFormat('F') }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <i
+                                                    class="absolute -translate-y-1/2 pointer-events-none ri-calendar-line left-3 top-1/2 text-base-content/50"></i>
                                             </div>
+                                        </div>
 
-                                            <div class="col-span-1 form-control sm:col-span-6 xl:col-span-3">
-                                                <label for="year" class="mb-1.5">
-                                                    <span class="text-xs font-semibold tracking-wide text-slate-600">Tahun <span
-                                                            class="text-error">*</span></span>
-                                                </label>
-                                                <div class="relative">
-                                                    <select name="year"
-                                                        class="w-full rounded-xl border-slate-200 bg-slate-50/80 year select select-bordered focus:outline-none focus:ring-2 focus:ring-primary">
-                                                        @php
-                                                            $currentYear = now()->year;
-                                                        @endphp
-                                                        @foreach (range($currentYear - 5, $currentYear + 5) as $year)
-                                                            <option value="{{ $year }}"
-                                                                {{ $year == $currentYear ? 'selected' : '' }}>
-                                                                {{ $year }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    <i
-                                                        class="absolute -translate-y-1/2 pointer-events-none ri-calendar-2-line left-3 top-1/2 text-base-content/50"></i>
-                                                </div>
+                                        <div class="col-span-1 form-control sm:col-span-6 xl:col-span-3">
+                                            <label for="year" class="mb-1.5">
+                                                <span class="text-xs font-semibold tracking-wide text-slate-600">Tahun
+                                                    <span class="text-error">*</span></span>
+                                            </label>
+                                            <div class="relative">
+                                                <select name="year"
+                                                    class="w-full rounded-xl border-slate-200 bg-slate-50/80 year select select-bordered focus:outline-none focus:ring-2 focus:ring-primary">
+                                                    @php
+                                                        $currentYear = now()->year;
+                                                    @endphp
+                                                    @foreach (range($currentYear - 5, $currentYear + 5) as $year)
+                                                        <option value="{{ $year }}"
+                                                            {{ $year == $currentYear ? 'selected' : '' }}>
+                                                            {{ $year }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <i
+                                                    class="absolute -translate-y-1/2 pointer-events-none ri-calendar-2-line left-3 top-1/2 text-base-content/50"></i>
                                             </div>
+                                        </div>
 
-                                            <div class="flex justify-end col-span-2 pt-1 sm:col-span-12 sm:pt-0 xl:col-span-3 xl:justify-stretch">
-                                                <button type="button"
-                                                    class="w-full gap-2 text-white bg-blue-600 border-0 shadow-sm rounded-xl btn hover:bg-blue-700 clientFilter sm:w-auto sm:min-w-36 xl:w-full">
-                                                    <i class="text-lg ri-filter-3-line"></i>
-                                                    Tampilkan
-                                                </button>
-                                            </div>
+                                        <div
+                                            class="flex justify-end col-span-2 pt-1 sm:col-span-12 sm:pt-0 xl:col-span-3 xl:justify-stretch">
+                                            <button type="button"
+                                                class="w-full gap-2 text-white bg-blue-600 border-0 shadow-sm rounded-xl btn hover:bg-blue-700 clientFilter sm:w-auto sm:min-w-36 xl:w-full">
+                                                <i class="text-lg ri-filter-3-line"></i>
+                                                Tampilkan
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -204,15 +216,21 @@
                     <div class="mb-6" id="filterTabs" style="display: none;">
                         <div role="tablist"
                             class="grid grid-cols-3 gap-2 p-2 border border-dashed tabs rounded-2xl border-base-300 bg-base-200/80">
-                            <a role="tab" class="min-h-0 px-2 text-xs font-semibold border border-transparent tab tab-active h-11 rounded-xl sm:h-12 sm:text-sm" data-filter="before">
+                            <a role="tab"
+                                class="min-h-0 px-2 text-xs font-semibold border border-transparent tab tab-active h-11 rounded-xl sm:h-12 sm:text-sm"
+                                data-filter="before">
                                 <i class="text-base sm:mr-2 ri-image-line"></i>
                                 <span>Before</span>
                             </a>
-                            <a role="tab" class="min-h-0 px-2 text-xs font-semibold border border-transparent tab h-11 rounded-xl sm:h-12 sm:text-sm" data-filter="proccess">
+                            <a role="tab"
+                                class="min-h-0 px-2 text-xs font-semibold border border-transparent tab h-11 rounded-xl sm:h-12 sm:text-sm"
+                                data-filter="proccess">
                                 <i class="text-base sm:mr-2 ri-settings-3-line"></i>
                                 <span>Proses</span>
                             </a>
-                            <a role="tab" class="min-h-0 px-2 text-xs font-semibold border border-transparent tab h-11 rounded-xl sm:h-12 sm:text-sm" data-filter="final">
+                            <a role="tab"
+                                class="min-h-0 px-2 text-xs font-semibold border border-transparent tab h-11 rounded-xl sm:h-12 sm:text-sm"
+                                data-filter="final">
                                 <i class="text-base sm:mr-2 ri-checkbox-circle-line"></i>
                                 <span>After</span>
                             </a>
@@ -254,7 +272,8 @@
 
     <!-- Image Selection Modal -->
     <dialog id="imageModal" class="flex items-center justify-center modal">
-        <div class="w-[96vw] max-w-[96vw] max-h-[92dvh] overflow-y-auto border shadow-2xl sm:max-w-3xl md:max-w-6xl rounded-2xl border-slate-200 modal-box">
+        <div
+            class="w-[96vw] max-w-[96vw] max-h-[92dvh] overflow-y-auto border shadow-2xl sm:max-w-3xl md:max-w-6xl rounded-2xl border-slate-200 modal-box">
             <form method="dialog">
                 <button
                     class="absolute z-10 text-white btn btn-sm btn-circle btn-ghost right-2 top-2 bg-black/50 hover:bg-black/70">
@@ -272,87 +291,103 @@
                     </button>
                 </div>
                 <div id="modalDefaultContent">
-                <div class="grid gap-2 mb-3">
-                    <div class="px-3 py-2 border rounded-xl bg-slate-50 border-slate-200">
-                        <div class="mb-0.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-slate-400">Uploader</div>
-                        <span class="text-xs font-medium capitalize sm:text-sm text-slate-700 name_upload"></span>
+                    <div class="grid gap-2 mb-3">
+                        <div class="px-3 py-2 border rounded-xl bg-slate-50 border-slate-200">
+                            <div class="mb-0.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-slate-400">
+                                Uploader</div>
+                            <span class="text-xs font-medium capitalize sm:text-sm text-slate-700 name_upload"></span>
+                        </div>
+                        <div
+                            class="hidden px-3 py-2 border rounded-xl bg-slate-50 border-slate-200 verified_by_wrapper">
+                            <div class="mb-0.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-slate-400">
+                                Dipilih Oleh</div>
+                            <span class="text-xs font-medium capitalize sm:text-sm text-slate-700 verified_by"></span>
+                        </div>
                     </div>
-                    <div class="hidden px-3 py-2 border rounded-xl bg-slate-50 border-slate-200 verified_by_wrapper">
-                        <div class="mb-0.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-slate-400">Dipilih Oleh</div>
-                        <span class="text-xs font-medium capitalize sm:text-sm text-slate-700 verified_by"></span>
-                    </div>
-                </div>
-                <div role="tablist" class="tabs tabs-lifted tabs-boxed bg-white/80 rounded-xl p-1">
-                    <input type="radio" name="image_tabs" role="tab" class="tab" aria-label="Before"
-                        data-type="before" checked />
-                    <div role="tabpanel" class="p-2 sm:p-3 tab-content bg-base-100 border border-slate-200 rounded-box">
-                        <figure class="relative flex items-center justify-center w-[82vw] max-w-full mx-auto overflow-hidden rounded-xl bg-slate-200 preview-frame sm:w-full">
-                            <img id="imgBefore" src="" alt="Before" class="preview-image min-h-[22vh] max-h-[36vh]">
-                            <div class="absolute inset-0 flex items-center justify-center" id="emptyBefore"
-                                style="display: none;">
-                                <div class="text-center">
-                                    <i class="mb-2 text-5xl ri-image-line text-slate-400"></i>
-                                    <p class="text-slate-500">Tidak ada foto</p>
+                    <div role="tablist" class="tabs tabs-lifted tabs-boxed bg-white/80 rounded-xl p-1">
+                        <input type="radio" name="image_tabs" role="tab" class="tab" aria-label="Before"
+                            data-type="before" checked />
+                        <div role="tabpanel"
+                            class="p-2 sm:p-3 tab-content bg-base-100 border border-slate-200 rounded-box">
+                            <figure
+                                class="relative flex items-center justify-center w-[82vw] max-w-full mx-auto overflow-hidden rounded-xl bg-slate-200 preview-frame sm:w-full">
+                                <img id="imgBefore" src="" alt="Before"
+                                    class="preview-image min-h-[22vh] max-h-[36vh]">
+                                <div class="absolute inset-0 flex items-center justify-center" id="emptyBefore"
+                                    style="display: none;">
+                                    <div class="text-center">
+                                        <i class="mb-2 text-5xl ri-image-line text-slate-400"></i>
+                                        <p class="text-slate-500">Tidak ada foto</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </figure>
-                    </div>
+                            </figure>
+                        </div>
 
-                    <input type="radio" name="image_tabs" role="tab" class="tab" aria-label="Proses"
-                        data-type="process" />
-                    <div role="tabpanel" class="p-2 sm:p-3 tab-content bg-base-100 border border-slate-200 rounded-box">
-                        <figure class="relative flex items-center justify-center w-[82vw] max-w-full mx-auto overflow-hidden rounded-xl bg-slate-200 preview-frame sm:w-full">
-                            <img id="imgProcess" src="" alt="Process" class="preview-image min-h-[22vh] max-h-[36vh]">
-                            <div class="absolute inset-0 flex items-center justify-center" id="emptyProcess"
-                                style="display: none;">
-                                <div class="text-center">
-                                    <i class="mb-2 text-5xl ri-image-line text-slate-400"></i>
-                                    <p class="text-slate-500">Tidak ada foto</p>
+                        <input type="radio" name="image_tabs" role="tab" class="tab" aria-label="Proses"
+                            data-type="process" />
+                        <div role="tabpanel"
+                            class="p-2 sm:p-3 tab-content bg-base-100 border border-slate-200 rounded-box">
+                            <figure
+                                class="relative flex items-center justify-center w-[82vw] max-w-full mx-auto overflow-hidden rounded-xl bg-slate-200 preview-frame sm:w-full">
+                                <img id="imgProcess" src="" alt="Process"
+                                    class="preview-image min-h-[22vh] max-h-[36vh]">
+                                <div class="absolute inset-0 flex items-center justify-center" id="emptyProcess"
+                                    style="display: none;">
+                                    <div class="text-center">
+                                        <i class="mb-2 text-5xl ri-image-line text-slate-400"></i>
+                                        <p class="text-slate-500">Tidak ada foto</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </figure>
-                    </div>
+                            </figure>
+                        </div>
 
-                    <input type="radio" name="image_tabs" role="tab" class="tab" aria-label="After"
-                        data-type="final" />
-                    <div role="tabpanel" class="p-2 sm:p-3 tab-content bg-base-100 border border-slate-200 rounded-box">
-                        <figure class="relative flex items-center justify-center w-[82vw] max-w-full mx-auto overflow-hidden rounded-xl bg-slate-200 preview-frame sm:w-full">
-                            <img id="imgFinal" src="" alt="Final" class="preview-image min-h-[22vh] max-h-[36vh]">
-                            <div class="absolute inset-0 flex items-center justify-center" id="emptyFinal"
-                                style="display: none;">
-                                <div class="text-center">
-                                    <i class="mb-2 text-5xl ri-image-line text-slate-400"></i>
-                                    <p class="text-slate-500">Tidak ada foto</p>
+                        <input type="radio" name="image_tabs" role="tab" class="tab" aria-label="After"
+                            data-type="final" />
+                        <div role="tabpanel"
+                            class="p-2 sm:p-3 tab-content bg-base-100 border border-slate-200 rounded-box">
+                            <figure
+                                class="relative flex items-center justify-center w-[82vw] max-w-full mx-auto overflow-hidden rounded-xl bg-slate-200 preview-frame sm:w-full">
+                                <img id="imgFinal" src="" alt="Final"
+                                    class="preview-image min-h-[22vh] max-h-[36vh]">
+                                <div class="absolute inset-0 flex items-center justify-center" id="emptyFinal"
+                                    style="display: none;">
+                                    <div class="text-center">
+                                        <i class="mb-2 text-5xl ri-image-line text-slate-400"></i>
+                                        <p class="text-slate-500">Tidak ada foto</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </figure>
+                            </figure>
+                        </div>
                     </div>
-                </div>
-                <div class="px-3 py-2 mt-3 border rounded-xl bg-slate-50 border-slate-200">
-                    <div class="mb-0.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-slate-400">Keterangan</div>
-                    <span class="text-xs leading-relaxed sm:text-sm text-slate-600 note"></span>
-                </div>
-                <div class="px-3 py-2 mt-3 border rounded-xl bg-slate-50 border-slate-200">
-                    <div class="mb-0.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-slate-400">Nilai After</div>
-                    <div class="flex items-center gap-2">
-                        <span id="ratingValueBadge"
-                            class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold text-slate-700 bg-slate-200">-</span>
-                        <button type="button" id="openRatingDetailBtn"
-                            class="hidden btn btn-xs rounded-md border-0 bg-blue-500/20 text-blue-700 hover:bg-blue-600 hover:text-white">Detail</button>
+                    <div class="px-3 py-2 mt-3 border rounded-xl bg-slate-50 border-slate-200">
+                        <div class="mb-0.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-slate-400">
+                            Keterangan</div>
+                        <span class="text-xs leading-relaxed sm:text-sm text-slate-600 note"></span>
                     </div>
-                </div>
+                    <div class="px-3 py-2 mt-3 border rounded-xl bg-slate-50 border-slate-200">
+                        <div class="mb-0.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-slate-400">Nilai
+                            After</div>
+                        <div class="flex items-center gap-2">
+                            <span id="ratingValueBadge"
+                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold text-slate-700 bg-slate-200">-</span>
+                            <button type="button" id="openRatingDetailBtn"
+                                class="hidden btn btn-xs rounded-md border-0 bg-blue-500/20 text-blue-700 hover:bg-blue-600 hover:text-white">Detail</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="p-4 pt-2 sm:p-6 bg-white border-t border-slate-200">
-                <div id="rateFormPanel" class="hidden space-y-4 rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 sm:p-5 shadow-sm">
+                <div id="rateFormPanel"
+                    class="hidden space-y-4 rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 sm:p-5 shadow-sm">
                     <div class="flex items-center justify-between">
                         <h4 class="text-sm font-semibold tracking-wide text-slate-800">Form Penilaian Foto</h4>
                         <button type="button" id="closeRatePanelBtn"
                             class="btn btn-xs rounded-md border-0 bg-slate-200 text-slate-700 hover:bg-slate-300">Kembali</button>
                     </div>
                     <div class="form-control">
-                        <label class="mb-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Rating</label>
+                        <label
+                            class="mb-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Rating</label>
                         <input type="hidden" id="ratingValueInput" value="">
                         <div class="relative">
                             <button type="button" id="ratingDropdownBtn"
@@ -362,15 +397,24 @@
                             </button>
                             <div id="ratingDropdownMenu"
                                 class="absolute z-30 mt-2 hidden w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
-                                <button type="button" class="rating-option w-full px-3 py-2 text-left text-sm font-medium text-slate-600 hover:bg-slate-100" data-value="">Pilih rating</button>
-                                <button type="button" class="rating-option w-full px-3 py-2 text-left text-sm font-medium text-rose-700 hover:bg-rose-50" data-value="kurang">Kurang</button>
-                                <button type="button" class="rating-option w-full px-3 py-2 text-left text-sm font-medium text-amber-700 hover:bg-amber-50" data-value="cukup">Cukup</button>
-                                <button type="button" class="rating-option w-full px-3 py-2 text-left text-sm font-medium text-emerald-700 hover:bg-emerald-50" data-value="baik">Baik</button>
+                                <button type="button"
+                                    class="rating-option w-full px-3 py-2 text-left text-sm font-medium text-slate-600 hover:bg-slate-100"
+                                    data-value="">Pilih rating</button>
+                                <button type="button"
+                                    class="rating-option w-full px-3 py-2 text-left text-sm font-medium text-rose-700 hover:bg-rose-50"
+                                    data-value="kurang">Kurang</button>
+                                <button type="button"
+                                    class="rating-option w-full px-3 py-2 text-left text-sm font-medium text-amber-700 hover:bg-amber-50"
+                                    data-value="cukup">Cukup</button>
+                                <button type="button"
+                                    class="rating-option w-full px-3 py-2 text-left text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+                                    data-value="baik">Baik</button>
                             </div>
                         </div>
                     </div>
                     <div class="form-control">
-                        <label class="mb-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Alasan</label>
+                        <label
+                            class="mb-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Alasan</label>
                         <textarea id="ratingReasonInput" rows="4" class="textarea textarea-bordered w-full rounded-xl bg-white"
                             placeholder="Isi alasan (opsional)"></textarea>
                     </div>
@@ -413,7 +457,8 @@
             </div>
             <div class="modal-action">
                 <form method="dialog">
-                    <button class="btn btn-sm rounded-lg border-0 bg-slate-200 text-slate-700 hover:bg-slate-300">Tutup</button>
+                    <button
+                        class="btn btn-sm rounded-lg border-0 bg-slate-200 text-slate-700 hover:bg-slate-300">Tutup</button>
                 </form>
             </div>
         </div>
@@ -471,6 +516,14 @@
                     return `${baseStorageUrl}/${path}`;
                 };
 
+                const setImageSource = ($image, path) => {
+                    $image.attr('src', resolveImageSrc(path))
+                        .off('error.placeholder')
+                        .on('error.placeholder', function() {
+                            $(this).off('error.placeholder').attr('src', placeholderImageUrl);
+                        });
+                };
+
                 const applyCountsFromResponse = (response) => {
                     const counts = response?.counts || response?.data;
                     if (!counts || typeof counts.count_today === 'undefined') {
@@ -519,7 +572,9 @@
                     const canEditRating = Boolean(fixedImage?.can_edit_rating ?? canRateCurrentUser);
 
                     $('#ratingValueBadge')
-                        .removeClass('bg-emerald-100 text-emerald-700 bg-amber-100 text-amber-700 bg-rose-100 text-rose-700 bg-slate-200 text-slate-700')
+                        .removeClass(
+                            'bg-emerald-100 text-emerald-700 bg-amber-100 text-amber-700 bg-rose-100 text-rose-700 bg-slate-200 text-slate-700'
+                            )
                         .addClass(getRatingBadgeClass(ratingValue))
                         .text(ratingValue === '-' ? '-' : ratingValue.toUpperCase());
 
@@ -538,7 +593,8 @@
                         $('#ratingReasonInput').prop('disabled', true);
                         $('#saveRatingBtn').prop('disabled', true).addClass('opacity-60 cursor-not-allowed');
                     } else {
-                        $('#ratingDropdownBtn').prop('disabled', false).removeClass('opacity-60 cursor-not-allowed');
+                        $('#ratingDropdownBtn').prop('disabled', false).removeClass(
+                        'opacity-60 cursor-not-allowed');
                         $('#ratingReasonInput').prop('disabled', false);
                         $('#saveRatingBtn').prop('disabled', false).removeClass('opacity-60 cursor-not-allowed');
                     }
@@ -749,6 +805,7 @@
                             $('#filterTabs').hide();
                         },
                         success: function(response) {
+                            console.log(response)
                             if (response.status) {
                                 clientData = response.data.client;
                                 imagesData = response.data.image.data;
@@ -864,6 +921,7 @@
                                     class="absolute inset-0 object-cover w-full h-full transition-transform duration-500 lazy-load hover:scale-105"
                                     style="opacity: 0; transition: opacity 0.3s;"
                                     onload="this.style.opacity=1"
+                                    onerror="this.onerror=null; this.src='${placeholderImageUrl}'"
                                 >
                                 <div class="absolute inset-x-0 top-0 flex items-start justify-between p-2">
                                     <div class="px-2 py-1 text-[11px] font-semibold text-white rounded-full bg-slate-900/70 backdrop-blur-sm">
@@ -931,29 +989,14 @@
                         {{-- if(image.upload_image_id == ) --}}
 
                         // Load images into modal
-                        if (image.img_before) {
-                            $('#imgBefore').attr('src', resolveImageSrc(image.img_before)).show();
-                            $('#emptyBefore').hide();
-                        } else {
-                            $('#imgBefore').attr('src', placeholderImageUrl).show();
-                            $('#emptyBefore').hide();
-                        }
+                        setImageSource($('#imgBefore'), image.img_before).show();
+                        $('#emptyBefore').hide();
 
-                        if (image.img_proccess) {
-                            $('#imgProcess').attr('src', resolveImageSrc(image.img_proccess)).show();
-                            $('#emptyProcess').hide();
-                        } else {
-                            $('#imgProcess').attr('src', placeholderImageUrl).show();
-                            $('#emptyProcess').hide();
-                        }
+                        setImageSource($('#imgProcess'), image.img_proccess).show();
+                        $('#emptyProcess').hide();
 
-                        if (image.img_final) {
-                            $('#imgFinal').attr('src', resolveImageSrc(image.img_final)).show();
-                            $('#emptyFinal').hide();
-                        } else {
-                            $('#imgFinal').attr('src', placeholderImageUrl).show();
-                            $('#emptyFinal').hide();
-                        }
+                        setImageSource($('#imgFinal'), image.img_final).show();
+                        $('#emptyFinal').hide();
 
                         $('#modalImageTitle').text(`Foto #${image.id}`);
                         const fixedInfo = image.fixed_image || null;
@@ -1015,9 +1058,11 @@
                         return;
                     }
 
-                    const currentRatingMeta = selectedImageData?.rating_meta || selectedImageData?.fixed_image || null;
+                    const currentRatingMeta = selectedImageData?.rating_meta || selectedImageData
+                        ?.fixed_image || null;
                     if (currentRatingMeta && currentRatingMeta.can_edit_rating === false) {
-                        Notify('Hanya penilai awal atau admin yang dapat mengubah penilaian.', null, null, 'warning');
+                        Notify('Hanya penilai awal atau admin yang dapat mengubah penilaian.', null, null,
+                            'warning');
                         return;
                     }
 
@@ -1048,7 +1093,8 @@
                             _token: '{{ csrf_token() }}'
                         },
                         beforeSend: function() {
-                            $('#saveRatingBtn').prop('disabled', true).html('<span class="loading loading-spinner"></span> Menyimpan...');
+                            $('#saveRatingBtn').prop('disabled', true).html(
+                                '<span class="loading loading-spinner"></span> Menyimpan...');
                         },
                         success: function(response) {
                             if (!response.status) return;
@@ -1072,13 +1118,16 @@
                             renderImages(imagesData, currentFilter);
                             enforceRatingBeforeSelect();
                             showDefaultMode();
-                            Notify(response.message || 'Penilaian berhasil disimpan.', null, null, 'success');
+                            Notify(response.message || 'Penilaian berhasil disimpan.', null, null,
+                                'success');
                         },
                         error: function(xhr) {
-                            Notify(xhr.responseJSON?.message || 'Gagal menyimpan penilaian.', null, null, 'error');
+                            Notify(xhr.responseJSON?.message || 'Gagal menyimpan penilaian.', null,
+                                null, 'error');
                         },
                         complete: function() {
-                            $('#saveRatingBtn').prop('disabled', false).html('<i class="ri-save-line"></i> Simpan Penilaian');
+                            $('#saveRatingBtn').prop('disabled', false).html(
+                                '<i class="ri-save-line"></i> Simpan Penilaian');
                         }
                     });
                 });
@@ -1137,7 +1186,8 @@
                                 Notify('Data berhasil disimpan!', null, null, 'success');
                                 applyCountsFromResponse(response);
                                 syncSelectionState(response.fixed_state);
-                                const idx = imagesData.findIndex(img => Number(img.id) === Number(selectedImageData.id));
+                                const idx = imagesData.findIndex(img => Number(img.id) === Number(
+                                    selectedImageData.id));
                                 if (idx !== -1 && response.fixed_state?.rating_value) {
                                     imagesData[idx].fixed_image = {
                                         ...(imagesData[idx].fixed_image || {}),
@@ -1410,6 +1460,7 @@
                     opacity: 0;
                     transform: translateY(6px);
                 }
+
                 to {
                     opacity: 1;
                     transform: translateY(0);

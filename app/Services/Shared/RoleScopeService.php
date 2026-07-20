@@ -14,29 +14,79 @@ class RoleScopeService
 
     public function allowedTypesForUser(User $user): array
     {
-        $typeJabatanUser = Str::upper((string) ($user->jabatan?->name_jabatan ?? ''));
-        $typeJabatanUser = str_replace('pusat', 'PUSAT', $typeJabatanUser);
-        $isSecurity = Str::contains($typeJabatanUser, 'SUPERVISOR PUSAT SECURITY');
+        $text = $this->roleText($user);
 
-        if (!$isSecurity && $typeJabatanUser === 'DANRU SECURITY') {
+        if (Str::contains($text, ['MARKETING', 'SUPERVISOR PUSAT SECURITY', 'SPV PUSAT SECURITY'])) {
             return ['SECURITY'];
         }
 
-        if ($isSecurity) {
-            return ['SECURITY', 'SUPERVISOR PUSAT SECURITY'];
+        if (Str::contains($text, ['DANRU SECURITY', 'CO-SCR'])) {
+            return ['SECURITY'];
         }
 
-        return ['CLEANING SERVICE', 'FRONT OFFICE', 'LEADER', 'FO', 'KASIR', 'KARYAWAN', 'TAMAN', 'TEKNISI'];
+        if (Str::contains($text, [
+            'SUPERVISOR AREA',
+            'SPV AREA',
+            'SUPERVISOR WILAYAH',
+            'SPV WILAYAH',
+            'SPV-W',
+            'SUPERVISOR PUSAT',
+            'SPV PUSAT',
+        ])) {
+            return ['CLEANING SERVICE', 'LEADER'];
+        }
+
+        if (Str::contains($text, ['LEADER', 'CO-CS'])) {
+            return ['CLEANING SERVICE'];
+        }
+
+        return [];
     }
 
-    public function allowedUserIds(User $user, ?int $clientId = null): array
+    public function allowedClientIds(User $user): array
     {
+        $ownClientId = (int) ($user->kerjasama?->client_id ?? 0);
+        $text = $this->roleText($user);
+
+        if ($ownClientId <= 0) {
+            return [];
+        }
+
+        if (Str::contains($text, ['MARKETING', 'SUPERVISOR PUSAT SECURITY', 'SPV PUSAT SECURITY', 'SUPERVISOR PUSAT', 'SPV PUSAT'])) {
+            return $this->repository->getAllClientIds();
+        }
+
+        if (Str::contains($text, ['SUPERVISOR WILAYAH', 'SPV WILAYAH', 'SPV-W'])) {
+            return $this->repository->getClientIdsByRegion($ownClientId);
+        }
+
+        return [$ownClientId];
+    }
+
+    public function allowedUserIds(User $user, ?int $clientId = null, ?array $allowedClientIds = null): array
+    {
+        $targetClientId = $clientId ?? (int) ($user->kerjasama?->client_id ?: 0);
+        $allowedClientIds ??= $this->allowedClientIds($user);
+        if (! in_array($targetClientId, $allowedClientIds, true)) {
+            return [];
+        }
+
+        if (Str::contains($this->roleText($user), ['SUPERVISOR WILAYAH', 'SPV WILAYAH', 'SPV-W'])) {
+            return $this->repository->getUserIdsByClientIds([$targetClientId]);
+        }
+
         $types = $this->allowedTypesForUser($user);
         $jabatanIds = $this->repository->getJabatanIdsByTypes($types);
 
-        return $this->repository->getUserIdsByJabatanAndClient(
-            $jabatanIds,
-            $clientId ?? (int) ($user->kerjasama?->client_id ?: 0),
-        );
+        return $this->repository->getUserIdsByJabatanAndClient($jabatanIds, $targetClientId);
+    }
+
+    private function roleText(User $user): string
+    {
+        return Str::upper(trim(implode(' ', [
+            (string) ($user->jabatan?->type_jabatan ?? ''),
+            (string) ($user->jabatan?->name_jabatan ?? ''),
+            (string) ($user->jabatan?->code_jabatan ?? ''),
+        ])));
     }
 }
