@@ -102,7 +102,11 @@
                             <tbody>
                                 @forelse ($qrCodes as $index => $qrCode)
                                     @php
-                                        $targetUrl = \App\Services\Media\QrCodeService::buildTargetUrlFromStoredData($qrCode->data);
+                                        if($qrCode->created_at->format('Y-m-d') <= '2026-04-29') {
+                                            $targetUrl = \App\Services\Media\QrCodeService::buildTargetUrlFromStoredData($qrCode->data);
+                                        } else {
+                                            $targetUrl = 'https://laporan-sac.sac-po.com/send-img/laporan?id=' . $qrCode->id;
+                                        }
                                     @endphp
                                     <tr class="hover">
                                         <td class="text-center">

@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ImageRateStoreRequest;
 use App\Http\Requests\ImageRateUpdateRequest;
 use App\Models\ImageRate;
+use App\Models\qrCode;
+use App\Models\User;
 use App\Services\Media\ImageRateService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ImageRateController extends Controller
@@ -20,7 +23,11 @@ class ImageRateController extends Controller
     {
         $data = $this->service->indexData($request->only(['search', 'rate', 'sort']));
 
-        return view('pages.admin.rating_image.index', $data);
+        if(in_array(Auth::user()->jabatan_id, ['10', '11', '12', '13', '19', '20', '35'])) {
+            return view('pages.user.rating_image.index', $data);
+        } else {
+            return view('pages.admin.rating_image.index', $data);
+        }
     }
 
     public function create(Request $request)
@@ -28,17 +35,27 @@ class ImageRateController extends Controller
         $intendedUrl = session()->get('url.intended');
         $nValue = null;
 
+        
         if ($intendedUrl) {
             $parsedUrl = parse_url($intendedUrl);
             if (isset($parsedUrl['query'])) {
                 parse_str($parsedUrl['query'], $queryParams);
-                $nValue = $queryParams['n'] ?? null;
+                if (!empty($queryParams['id'])) {
+                    $qrCode = qrCode::find($queryParams['id']);
+                    $nValue = $qrCode ? explode('-', $qrCode->data)[0] : null;
+                } else {
+                    $nValue = $queryParams['n'] ?? null;
+                }
             }
         }
 
         $uploadPreview = $this->service->findUploadPreviewByName($nValue);
 
-        return view('pages.user.rating_image.create', compact('nValue', 'uploadPreview'));
+        if($request->jenis == 'kepala-jaga') {
+            return view('pages.user.rating_image.create_kepala_jaga', compact('nValue', 'uploadPreview'));
+        } else {
+            return view('pages.user.rating_image.create', compact('nValue', 'uploadPreview'));
+        }
     }
 
     public function store(ImageRateStoreRequest $request)
@@ -46,7 +63,7 @@ class ImageRateController extends Controller
         try {
             $this->service->store($request->validated());
 
-            return redirect('/')->with('success', 'Rating berhasil disimpan');
+            return redirect()->route('rating-pekerjaan.makasih');
         } catch (\RuntimeException $e) {
             return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         } catch (QueryException $e) {

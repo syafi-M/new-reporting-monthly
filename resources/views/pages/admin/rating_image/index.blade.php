@@ -128,7 +128,8 @@
                                                         data-before="{{ $rate->uploadImage?->img_before ? asset('storage/' . $rate->uploadImage->img_before) : '' }}"
                                                         data-progress="{{ $rate->uploadImage?->img_proccess ? asset('storage/' . $rate->uploadImage->img_proccess) : '' }}"
                                                         data-after="{{ $rate->uploadImage?->img_final ? asset('storage/' . $rate->uploadImage->img_final) : '' }}"
-                                                        data-note="{{ $rate->uploadImage?->note ?? '-' }}">
+                                                        data-note="{{ $rate->uploadImage?->note ?? '-' }}"
+                                                        data-foto-rating="{{ $rate->image_path_rate ? asset('storage/' . $rate->image_path_rate) : '' }}">
                                                         #{{ $rate->upload_image_id }} (klik untuk melihat gambar)
                                                     </button>
                                                 @else
@@ -250,6 +251,10 @@
                     <p class="mb-2 text-sm font-semibold">After</p>
                     <img id="uploadImageAfter" src="https://placehold.co/600x400?text=No+Image" class="w-full rounded-lg border border-base-300 object-cover aspect-[4/3]">
                 </div>
+                <div class="md:col-span-3 flex flex-col justify-center mx-[25%]">
+                    <p class="mb-2 text-sm font-semibold">Foto Dari Pengulas</p>
+                    <img id="uploadImageRate" src="https://placehold.co/600x400?text=No+Image" class="w-full rounded-lg border border-base-300 object-cover aspect-[4/3]">
+                </div>
             </div>
 
             <div class="modal-action">
@@ -292,16 +297,19 @@
                     const after = $(this).data('after') || placeholder;
                     const uploadId = $(this).data('upload-id') || '-';
                     const note = $(this).data('note') || '-';
+                    const fotoRating = $(this).data('foto-rating') || placeholder;
 
                     $('#uploadImageIdLabel').text(uploadId);
                     $('#uploadImageNote').text(note);
                     $('#uploadImageBefore').attr('src', before);
                     $('#uploadImageProgress').attr('src', progress);
                     $('#uploadImageAfter').attr('src', after);
+                    $('#uploadImageRate').attr('src', fotoRating);
+                    
                     imageModal.showModal();
                 });
 
-                ['#uploadImageBefore', '#uploadImageProgress', '#uploadImageAfter'].forEach(function(selector) {
+                ['#uploadImageBefore', '#uploadImageProgress', '#uploadImageAfter', '#uploadImageRate'].forEach(function(selector) {
                     $(selector).on('error', function() {
                         this.src = placeholder;
                     });
