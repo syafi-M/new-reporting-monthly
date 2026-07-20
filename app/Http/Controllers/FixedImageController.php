@@ -15,7 +15,7 @@ class FixedImageController extends Controller
 
     public function index()
     {
-        return view('pages.user.set_fixed.index', $this->service->indexData());
+        return view('pages.user.set_fixed.index', $this->service->indexData(auth()->user()));
     }
 
     public function create(Request $request)
@@ -29,7 +29,7 @@ class FixedImageController extends Controller
                 'data' => $data,
             ], 200);
         } catch (Exception $e) {
-            throw new Exception('Error Processing Request' . $e->getMessage(), 1);
+            throw new Exception('Error Processing Request'.$e->getMessage(), 1);
         }
     }
 
@@ -64,7 +64,7 @@ class FixedImageController extends Controller
                 ],
             ], 200);
         } catch (Exception $e) {
-            throw new Exception('Error Processing Request' . $e->getMessage(), 1);
+            throw new Exception('Error Processing Request'.$e->getMessage(), 1);
         }
     }
 
@@ -91,7 +91,7 @@ class FixedImageController extends Controller
                 ],
             ], 200);
         } catch (Exception $e) {
-            throw new Exception('Error Processing Request' . $e->getMessage(), 1);
+            throw new Exception('Error Processing Request'.$e->getMessage(), 1);
         }
     }
 
@@ -124,7 +124,7 @@ class FixedImageController extends Controller
                 'data' => $result['data'],
             ], 200);
         } catch (Exception $e) {
-            throw new Exception('Error Processing Request' . $e->getMessage(), 1);
+            throw new Exception('Error Processing Request'.$e->getMessage(), 1);
         }
     }
 }

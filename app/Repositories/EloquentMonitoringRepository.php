@@ -129,6 +129,8 @@ class EloquentMonitoringRepository implements MonitoringRepositoryInterface
             ->whereBetween('created_at', [$startAt, $endAt])
             ->whereIn('user_id', $allowedUserIds);
 
+        // dd($allowedUserIds);
+
         return UploadImage::query()
             ->select('id', 'user_id', 'clients_id', 'img_before', 'img_proccess', 'img_final', 'note', 'created_at')
             ->with([

@@ -20,10 +20,14 @@ class FixedImageService
         private readonly PeriodService $periodService,
     ) {}
 
-    public function indexData(): array
+    public function indexData($user): array
     {
+        $allowedClientIds = $this->roleScope->allowedClientIds($user);
+
         return [
-            'clients' => $this->repository->getClientsLite(),
+            'clients' => $this->repository->getClientsLite()
+                ->whereIn('id', $allowedClientIds)
+                ->values(),
         ];
     }
 
@@ -91,7 +95,7 @@ class FixedImageService
             }
 
             $uploadImage = $this->resolveUploadImageInScope($uploadImageId, $scope);
-            if (!$uploadImage) {
+            if (! $uploadImage) {
                 return [
                     'success' => false,
                     'limit' => false,
@@ -128,7 +132,7 @@ class FixedImageService
             $rating = null;
             if ($ratingValue !== '' && in_array($ratingValue, ['kurang', 'cukup', 'baik'], true) && $this->canRateFixedImage($requestUser)) {
                 $ratingResult = $this->persistUploadImageRating($uploadImageId, $ratingValue, $ratingReason, $requestUser);
-                if (!$ratingResult['status']) {
+                if (! $ratingResult['status']) {
                     return [
                         'success' => false,
                         'limit' => false,
@@ -156,7 +160,7 @@ class FixedImageService
                 'rating' => $this->ratingPayload($model, $requestUser),
             ];
         } catch (Exception $e) {
-            throw new Exception('Error Processing Request: ' . $e->getMessage());
+            throw new Exception('Error Processing Request: '.$e->getMessage());
         }
     }
 
@@ -165,7 +169,7 @@ class FixedImageService
         $scope = $this->resolveScope($request);
         $uploadImage = $this->resolveUploadImageInScope($uploadImageId, $scope);
 
-        if (!$uploadImage) {
+        if (! $uploadImage) {
             return [
                 'status' => false,
                 'message' => 'Data tidak ditemukan atau tidak termasuk cakupan akses',
@@ -178,7 +182,7 @@ class FixedImageService
             $scope['allowed_user_ids'],
         );
 
-        if (!$deleted) {
+        if (! $deleted) {
             return [
                 'status' => false,
                 'message' => 'Data tidak ditemukan',
@@ -217,7 +221,7 @@ class FixedImageService
             ];
         }
 
-        if (!$this->canRateFixedImage($user)) {
+        if (! $this->canRateFixedImage($user)) {
             return [
                 'status' => false,
                 'message' => 'Anda tidak memiliki akses untuk menilai foto ini.',
@@ -226,7 +230,7 @@ class FixedImageService
         }
 
         $uploadImage = $this->resolveUploadImageInScope($uploadImageId, $scope);
-        if (!$uploadImage) {
+        if (! $uploadImage) {
             return [
                 'status' => false,
                 'message' => 'Upload image tidak ditemukan atau tidak termasuk cakupan akses.',
@@ -240,7 +244,7 @@ class FixedImageService
             trim((string) ($data['rating_reason'] ?? '')) ?: null,
             $user,
         );
-        if (!$ratingResult['status']) {
+        if (! $ratingResult['status']) {
             return [
                 'status' => false,
                 'message' => $ratingResult['message'],
@@ -284,13 +288,14 @@ class FixedImageService
     private function resolveScope(Request $request): array
     {
         $user = $request->user();
-        $requestedClientId = $request->input('client_id');
-        $fallbackClientId = $user?->kerjasama?->client_id;
-        $clientId = (int) $fallbackClientId;
-
-        if (!empty($requestedClientId) && method_exists($user, 'canAccess') && $user->canAccess()) {
-            $clientId = (int) $requestedClientId;
-        }
+        $allowedClientIds = $this->roleScope->allowedClientIds($user);
+        $requestedClientId = (int) $request->input('client_id');
+        $fallbackClientId = (int) ($user?->kerjasama?->client_id ?? 0);
+        $clientId = in_array($requestedClientId, $allowedClientIds, true)
+            ? $requestedClientId
+            : (in_array($fallbackClientId, $allowedClientIds, true)
+                ? $fallbackClientId
+                : (int) ($allowedClientIds[0] ?? 0));
 
         $period = $this->periodService->monthRange(
             $request->filled('month') ? (int) $request->input('month') : null,
@@ -301,7 +306,8 @@ class FixedImageService
             'client_id' => $clientId,
             'start_at' => $period['start_at'],
             'end_at' => $period['end_at'],
-            'allowed_user_ids' => $this->roleScope->allowedUserIds($user, $clientId),
+            'allowed_client_ids' => $allowedClientIds,
+            'allowed_user_ids' => $this->roleScope->allowedUserIds($user, $clientId, $allowedClientIds),
         ];
     }
 
@@ -338,7 +344,7 @@ class FixedImageService
 
     private function canRateFixedImage($user): bool
     {
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
@@ -361,7 +367,7 @@ class FixedImageService
     public function canEditRating(FixedImage $fixedImage, Request $request): bool
     {
         $user = $request->user();
-        if (!$this->canRateFixedImage($user)) {
+        if (! $this->canRateFixedImage($user)) {
             return false;
         }
 
@@ -369,7 +375,7 @@ class FixedImageService
             return true;
         }
 
-        if (!$fixedImage->rated_by_user_id) {
+        if (! $fixedImage->rated_by_user_id) {
             return true;
         }
 
@@ -379,7 +385,7 @@ class FixedImageService
     private function canEditRatingByOwner(int $ratedByUserId, Request $request): bool
     {
         $user = $request->user();
-        if (!$this->canRateFixedImage($user)) {
+        if (! $this->canRateFixedImage($user)) {
             return false;
         }
         if ($this->isAdmin($user)) {
@@ -403,8 +409,8 @@ class FixedImageService
             'rated_by_name' => $fixedImage->ratedBy?->nama_lengkap,
             'can_rate' => $this->canRateFixedImage($requestUser),
             'can_edit_rating' => $requestUser
-                ? $this->isAdmin($requestUser) || !$fixedImage->rated_by_user_id
-                    || (int) $fixedImage->rated_by_user_id === (int) $requestUser?->id
+                ? $this->isAdmin($requestUser) || ! $fixedImage->rated_by_user_id
+                || (int) $fixedImage->rated_by_user_id === (int) $requestUser?->id
                 : false,
         ];
     }
@@ -420,7 +426,7 @@ class FixedImageService
             ->where('upload_image_id', $uploadImageId)
             ->first();
 
-        if ($existing && !$this->isAdmin($user) && (int) $existing->rated_by_user_id !== (int) $user->id) {
+        if ($existing && ! $this->isAdmin($user) && (int) $existing->rated_by_user_id !== (int) $user->id) {
             return [
                 'status' => false,
                 'message' => 'Nilai hanya dapat diubah oleh pembuat nilai awal.',
