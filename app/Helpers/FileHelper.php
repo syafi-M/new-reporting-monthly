@@ -37,14 +37,7 @@ class FileHelper
 
     protected static function shouldConvertToWebp(string $path): bool
     {
-        if (!is_file($path)) {
-            return false;
-        }
-
-        $sizeKB = filesize($path) / 1024;
-        [$width, $height] = getimagesize($path);
-
-        return !($sizeKB < 80 || ($width < 400 && $height < 400));
+        return is_file($path) && getimagesize($path) !== false;
     }
 
     protected static function convertToWebp(string $fullPath, int $quality): ?string
