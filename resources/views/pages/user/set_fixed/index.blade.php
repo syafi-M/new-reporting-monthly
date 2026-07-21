@@ -574,7 +574,7 @@
                     $('#ratingValueBadge')
                         .removeClass(
                             'bg-emerald-100 text-emerald-700 bg-amber-100 text-amber-700 bg-rose-100 text-rose-700 bg-slate-200 text-slate-700'
-                            )
+                        )
                         .addClass(getRatingBadgeClass(ratingValue))
                         .text(ratingValue === '-' ? '-' : ratingValue.toUpperCase());
 
@@ -594,7 +594,7 @@
                         $('#saveRatingBtn').prop('disabled', true).addClass('opacity-60 cursor-not-allowed');
                     } else {
                         $('#ratingDropdownBtn').prop('disabled', false).removeClass(
-                        'opacity-60 cursor-not-allowed');
+                            'opacity-60 cursor-not-allowed');
                         $('#ratingReasonInput').prop('disabled', false);
                         $('#saveRatingBtn').prop('disabled', false).removeClass('opacity-60 cursor-not-allowed');
                     }
@@ -805,7 +805,6 @@
                             $('#filterTabs').hide();
                         },
                         success: function(response) {
-                            console.log(response)
                             if (response.status) {
                                 clientData = response.data.client;
                                 imagesData = response.data.image.data;
