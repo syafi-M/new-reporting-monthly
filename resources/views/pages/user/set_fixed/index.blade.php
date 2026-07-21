@@ -517,7 +517,7 @@
                 };
 
                 const setImageSource = ($image, path) => {
-                    $image.attr('src', resolveImageSrc(path))
+                    return $image.attr('src', resolveImageSrc(path))
                         .off('error.placeholder')
                         .on('error.placeholder', function() {
                             $(this).off('error.placeholder').attr('src', placeholderImageUrl);
